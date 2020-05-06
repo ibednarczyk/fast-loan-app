@@ -45,7 +45,7 @@ public class LoanService {
                 .orElseThrow(() -> new LoanNotFoundException(id));
     }
 
-    public Loan findByApplicationId (Long applicationId) throws LoanNotFoundByApplicationIdException {
+    public Loan findByApplicationId (Long applicationId) {
         return repository.findById(applicationId)
                 .orElseThrow(() -> new LoanNotFoundByApplicationIdException(applicationId));
     }
@@ -53,19 +53,17 @@ public class LoanService {
 
 
 
-    public ResponseEntity<String> create(Long applicationId) throws IncorrectApplicationStatusException {
+    public ResponseEntity<String> create(Long applicationId) {
         Application application = Objects.requireNonNull(service.findById(applicationId));
         Loan loan = new Loan();
-        if (!ApplicationStatus.ACCEPTED.equals(application.getStatus())){
-            throw new IncorrectApplicationStatusException(applicationId);
-        } else {
-            loan.setStatus(LoanStatus.VALID);
-            loan.setOpenDate(LocalDateTime.now());
-            loan.setDueDate(loan.getOpenDate().plusDays(application.getTerm()));
-            loan.setCost(calculate(applicationId));
-            loan.setUser(application.getUser());
-            repository.save(loan);
-        }
+        validateApplicationStatus(application.getStatus(), applicationId);
+        loan.setStatus(LoanStatus.VALID);
+        loan.setOpenDate(LocalDateTime.now());
+        loan.setDueDate(loan.getOpenDate().plusDays(application.getTerm()));
+        loan.setCost(calculate(applicationId));
+        loan.setUser(application.getUser());
+        repository.save(loan);
+
         return new ResponseEntity<>("Success! Loan number: " + loan.getLoanId() + " was created.", HttpStatus.OK);
 
     }
@@ -77,11 +75,10 @@ public class LoanService {
         return this.total;
     }
 
-    public ResponseEntity<String> extend (Long loanId, Integer extensionDays) throws IncorrectRequirementsException, IncorrectLoanStatusException {
+    public ResponseEntity<String> extend (Long loanId, Integer extensionDays) {
         Loan loan = Objects.requireNonNull(findById(loanId));
-        if (LoanStatus.EXTENDED.equals(loan.getStatus())){
-            throw new IncorrectLoanStatusException(loanId);
-        } else if (!configuration.getExtension().contains(extensionDays)) {
+        validateLoanStatus(loan.getStatus(), loanId);
+        if (!configuration.getExtension().contains(extensionDays)) {
             throw new IncorrectRequirementsException();
         } else {
             LocalDateTime extended = loan.getDueDate().plusDays(extensionDays);
@@ -95,6 +92,19 @@ public class LoanService {
 
     public void deleteById(Long id){
         repository.deleteById(id);
+    }
+
+
+    private void validateLoanStatus(String actual, Long loanId){
+        if (LoanStatus.EXTENDED.equals(actual)) {
+            throw new IncorrectLoanStatusException(loanId);
+        }
+    }
+
+    private void validateApplicationStatus(String actual, Long appId){
+        if (!ApplicationStatus.ACCEPTED.equals(actual)) {
+            throw new IncorrectApplicationStatusException(appId);
+        }
     }
 
 
