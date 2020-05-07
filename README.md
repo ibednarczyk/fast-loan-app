@@ -17,7 +17,7 @@ Main features:
 - Find
 - Delete
 ###### Built with:
-* Spring 
+* Spring v2.2.1.RELEASE
 * Hibernate
 * Gradle v. 6.0
 * MySQL v. 8.0.19
