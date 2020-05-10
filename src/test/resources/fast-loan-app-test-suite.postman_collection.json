@@ -1,0 +1,581 @@
+{
+	"info": {
+		"_postman_id": "258d09a8-b895-4a44-9535-650578590e5f",
+		"name": "fast-loan-app-test-suite",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api/applications",
+			"item": [
+				{
+					"name": "applications/apply",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"principal\": 5000.00,\n\t\"term\": 45\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/applications/apply",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"applications",
+								"apply"
+							]
+						},
+						"description": "Calling the POST method from Http protocol - expected response status code is a 200 OK "
+					},
+					"response": []
+				},
+				{
+					"name": "applications",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"principal\": 8000.00,\n    \"term\": 30\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/applications?id=74",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"applications"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "74"
+								}
+							]
+						},
+						"description": "Calling the GET method from Http protocol - expected response body is an Application with id passed as a request parameter returned in JSON format"
+					},
+					"response": []
+				},
+				{
+					"name": "applications/all",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"principal\": 8000.00,\n    \"term\": 30\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/applications/all",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"applications",
+								"all"
+							]
+						},
+						"description": "Calling the GET method from Http protocol - expected response body is a list of all Applications existing in database returned in JSON format "
+					},
+					"response": []
+				},
+				{
+					"name": "applications/verify - positive",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"principal\": 20000.00,\n    \"term\": 50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/applications/verify?id=103",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"applications",
+								"verify"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "103"
+								}
+							]
+						},
+						"description": "Calling the PUT method from Http protocol - expected response status code is a 200 OK - Application verified positively"
+					},
+					"response": []
+				},
+				{
+					"name": "applications/verify - negative",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"principal\": 20000.00,\n    \"term\": 50\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/applications/verify?id=104",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"applications",
+								"verify"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "104"
+								}
+							]
+						},
+						"description": "Calling the PUT method from Http protocol - expected response status code is a 400 Bad Request - Application verified negatively, because of incompatibility with requirements"
+					},
+					"response": []
+				},
+				{
+					"name": "applications/delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/applications/delete?id=82",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"applications",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "82"
+								}
+							]
+						},
+						"description": "Calling the DELETE method from Http protocol - expected response status code is a 200 OK - Application deleted from database"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "api/loans",
+			"item": [
+				{
+					"name": "loans/create",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/loans/create?appId=103",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"loans",
+								"create"
+							],
+							"query": [
+								{
+									"key": "appId",
+									"value": "103"
+								}
+							]
+						},
+						"description": "Calling the POST method from Http protocol - expected response status code is a 200 OK "
+					},
+					"response": []
+				},
+				{
+					"name": "loans",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
+						},
+						"description": "Calling the GET method from Http protocol - expected response body is a Loan with id passed as a request parameter returned in JSON format"
+					},
+					"response": []
+				},
+				{
+					"name": "loans/all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/loans/all",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"loans",
+								"all"
+							]
+						},
+						"description": "Calling the GET method from Http protocol - expected response body is a list of all Loans existing in database returned in JSON format "
+					},
+					"response": []
+				},
+				{
+					"name": "loans/extend - positive",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/loans/extend?id=71&days=30",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"loans",
+								"extend"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "71"
+								},
+								{
+									"key": "days",
+									"value": "30"
+								}
+							]
+						},
+						"description": "Calling the PUT method from Http protocol - expected response status code is a 200 OK - Loan extended correctly"
+					},
+					"response": []
+				},
+				{
+					"name": "loans/extend - negative1",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/loans/extend?id=77&days=30",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"loans",
+								"extend"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "77"
+								},
+								{
+									"key": "days",
+									"value": "30"
+								}
+							]
+						},
+						"description": "Calling the PUT method from Http protocol - expected response status code is a 400 Bad Request - Loan has been already exrended"
+					},
+					"response": []
+				},
+				{
+					"name": "loans/extend - negative2",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/loans/extend?id=105&days=40",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"loans",
+								"extend"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "105"
+								},
+								{
+									"key": "days",
+									"value": "40"
+								}
+							]
+						},
+						"description": "Calling the PUT method from Http protocol - expected response status code is a 400 Bad Request because of incompatible requirements - incorrect extension days value"
+					},
+					"response": []
+				},
+				{
+					"name": "loans/delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/loans/delete?id=67",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"loans",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "67"
+								}
+							]
+						},
+						"description": "Calling the DELETE method from Http protocol - expected response status code is a 200 OK - Loan deleted from database"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "api/users",
+			"item": [
+				{
+					"name": "users/register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\t\"firstName\": \"Maya\",\n        \"lastName\": \"Springer\",\n        \"email\": \"xyz@mail.com\",\n        \"phoneNumber\": \"000-222-127\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/users/register",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"register"
+							]
+						},
+						"description": "Calling the POST method from Http protocol - expected response status code is a 200 OK "
+					},
+					"response": []
+				},
+				{
+					"name": "users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api//users?id=72",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"",
+								"users"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "72"
+								}
+							]
+						},
+						"description": "Calling the GET method from Http protocol - expected response body is a User with id passed as a request parameter returned in JSON format"
+					},
+					"response": []
+				},
+				{
+					"name": "users/all",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api//users/all",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"",
+								"users",
+								"all"
+							]
+						},
+						"description": "Calling the GET method from Http protocol - expected response body is a list of all Users existing in database returned in JSON format "
+					},
+					"response": []
+				},
+				{
+					"name": "users/delete",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8080/api/users/delete?id=46",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"users",
+								"delete"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "46"
+								}
+							]
+						},
+						"description": "Calling the DELETE method from Http protocol - expected response status code is a 200 OK - User deleted from database"
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
