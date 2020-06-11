@@ -22,16 +22,5 @@ public class UserController {
         service.register(user);
         return new ResponseEntity<>("You have been register successfully.", HttpStatus.OK);}
 
-    @GetMapping(value = "/all")
-    public List<User> getAll(){
-        return service.findAll();
-    }
 
-    @GetMapping
-    public User getById(@RequestParam(value = "id") Long id){
-        return service.findById(id);
-    }
-
-    @DeleteMapping(value = "/delete")
-    public void deleteById(@RequestParam(value = "id") Long id){ service.deleteById(id); }
 }
