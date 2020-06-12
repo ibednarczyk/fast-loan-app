@@ -1,13 +1,11 @@
 package com.loan_application.controller;
 
 
-import com.loan_application.domain.loan.Loan;
 import com.loan_application.exceptions.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.loan_application.service.LoanService;
 
-import java.util.List;
 
 
 @RestController
@@ -17,21 +15,6 @@ public class LoanController {
     private final LoanService service;
 
     public LoanController(LoanService service) { this.service = service;
-    }
-
-    @GetMapping(value = "/all")
-    public List<Loan> getAll(){
-        return service.findAll();
-    }
-
-    @GetMapping
-    public Loan getById(@RequestParam(value = "id") Long id) throws LoanNotFoundException {
-        return service.findById(id);
-    }
-
-    @GetMapping(value = "/appId/{id}")
-    public Loan getLoanByApplicationId(@PathVariable Long id) throws LoanNotFoundByApplicationIdException {
-        return service.findByApplicationId(id);
     }
 
 
@@ -46,9 +29,5 @@ public class LoanController {
     }
 
 
-    @DeleteMapping(value = "/delete")
-    public void deleteById(@RequestParam(value = "id") Long id){
-        service.deleteById(id);
-    }
 
 }

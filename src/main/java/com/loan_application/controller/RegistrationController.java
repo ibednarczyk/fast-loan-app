@@ -6,21 +6,20 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/register")
+public class RegistrationController {
 
     private UserService service;
 
 
-    public UserController(UserService userService) { this.service = userService; }
+    public RegistrationController(UserService userService) { this.service = userService; }
 
-    @PostMapping(value = "/register")
+    @PostMapping
     public ResponseEntity<String> register(@RequestBody User user){
         service.register(user);
-        return new ResponseEntity<>("You have been register successfully.", HttpStatus.OK);}
+        return new ResponseEntity<>("You have been register successfully!", HttpStatus.CREATED);}
 
 
 }
