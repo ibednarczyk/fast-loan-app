@@ -42,6 +42,7 @@ public class UserService {
                 .email(user.getEmail())
                 .phoneNumber(user.getPhoneNumber())
                 .role(user.getRole())
+                .active(true)
                 .build();
         repository.save(user);
         emailRegistrationService.send(user.getUserId());

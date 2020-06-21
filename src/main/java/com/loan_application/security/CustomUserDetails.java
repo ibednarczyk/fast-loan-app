@@ -78,4 +78,8 @@ public class CustomUserDetails implements UserDetails {
     public String getRole() {
         return user.getRole();
     }
+
+    public boolean getActive(){
+        return user.isActive();
+    }
 }
