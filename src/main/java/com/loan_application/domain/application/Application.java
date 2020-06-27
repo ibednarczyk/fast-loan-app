@@ -7,9 +7,10 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
 @Builder
 @Entity
@@ -30,7 +31,7 @@ public class Application {
     private Integer term;
 
     @Column(name = "SUBMISSION_DATE")
-    private Instant submissionDate;
+    private LocalDateTime submissionDate;
 
     @Column(name = "STATUS")
     private String status;

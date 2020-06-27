@@ -7,6 +7,8 @@ import com.loan_application.domain.application.Application;
 import com.loan_application.domain.user.User;
 import com.loan_application.exceptions.ApplicationNotFoundException;
 import com.loan_application.exceptions.IncorrectRequirementsException;
+import com.loan_application.mappers.ApplicationMapper;
+import com.loan_application.representation.ApplicationDto;
 import com.loan_application.status.ApplicationStatus;
 import com.loan_application.repository.ApplicationsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.loan_application.mappers.ApplicationMapper.mapToApplication;
 
 @Service
 public class ApplicationService {
@@ -30,57 +36,59 @@ public class ApplicationService {
         this.repository = repository;
         this.service = service;
         this.emailService = emailService;
-
     }
 
-    public Application findById(Long id) throws ApplicationNotFoundException {
-        return  repository.findById(id)
+    public ApplicationDto findById(Long id) throws ApplicationNotFoundException {
+        return  repository.findById(id).map(ApplicationMapper::mapToApplicationDto)
                 .orElseThrow(() -> new ApplicationNotFoundException(id));
     }
 
-    public List<Application> findAll(){
-        return repository.findAll();
+    public List<ApplicationDto> findAll(){
+        return repository.findAll().stream()
+                .map(ApplicationMapper :: mapToApplicationDto)
+                .collect(Collectors.toList());
     }
 
 
-    public void apply (Application application, Long userId) {
+    public void apply (ApplicationDto applicationDto, Long userId) {
         User user = Objects.requireNonNull(service.findById(userId));
-        new Application.Builder()
-                .principal(application.getPrincipal())
-                .term(application.getTerm())
-                .build();
+        Application application = mapToApplication(applicationDto);
         application.setSubmissionDate(LocalDateTime.now());
         application.setStatus(ApplicationStatus.NEW);
         application.setUser(user);
-        repository.save(application);
+        application = repository.save(application);
+        applicationDto.setAppId(application.getAppId());
+        applicationDto.setStatus(application.getStatus());
+        applicationDto.setSubmissionDate(application.getSubmissionDate());
+        applicationDto.setUser(application.getUser());
         emailService.send(userId);
     }
 
 
 
     public void verify(Long id) throws ApplicationNotFoundException, IncorrectRequirementsException {
-       Application application = Objects.requireNonNull(findById(id));
-        if (application.getPrincipal().compareTo(configuration.getMaxPrincipal()) >= 0 &&
-                application.getSubmissionDate().toLocalTime().isAfter(configuration.getMinTime()) ||
-                application.getSubmissionDate().toLocalTime().isBefore(configuration.getMaxTime())) {
+       Optional<Application> application = Objects.requireNonNull(repository.findById(id));
+        if (application.isPresent() && application.get().getPrincipal().compareTo(configuration.getMaxPrincipal()) >= 0 &&
+                application.get().getSubmissionDate().toLocalTime().isAfter(configuration.getMinTime()) ||
+                application.isPresent() && application.get().getSubmissionDate().toLocalTime().isBefore(configuration.getMaxTime())) {
 
-            application.setStatus(ApplicationStatus.REJECTED);
-            repository.save(application);
+            application.get().setStatus(ApplicationStatus.REJECTED);
+            repository.save(application.get());
             throw new IncorrectRequirementsException();
 
-        } else if ((!ApplicationStatus.REJECTED.equals(application.getStatus())) &&
-                application.getPrincipal().compareTo(configuration.getMinPrincipal()) < 0 ||
-                application.getPrincipal().compareTo(configuration.getMinPrincipal()) < 0 ||
-                application.getPrincipal().compareTo(configuration.getMaxPrincipal()) > 0 ||
-                application.getTerm() < configuration.getMinTerm() ||
-                application.getTerm() > configuration.getMaxTerm()) {
+        } else if ((application.isPresent() && !ApplicationStatus.REJECTED.equals(application.get().getStatus())) &&
+                application.get().getPrincipal().compareTo(configuration.getMinPrincipal()) < 0 ||
+                application.isPresent() && application.get().getPrincipal().compareTo(configuration.getMinPrincipal()) < 0 ||
+                application.isPresent() && application.get().getPrincipal().compareTo(configuration.getMaxPrincipal()) > 0 ||
+                application.isPresent() && application.get().getTerm() < configuration.getMinTerm() ||
+                application.isPresent() && application.get().getTerm() > configuration.getMaxTerm()) {
 
-            application.setStatus(ApplicationStatus.REJECTED);
-            repository.save(application);
+            application.get().setStatus(ApplicationStatus.REJECTED);
+            repository.save(application.get());
             throw new IncorrectRequirementsException();
-        } else {
-            application.setStatus(ApplicationStatus.ACCEPTED);
-            repository.save(application);
+        } else if (application.isPresent()) {
+            application.get().setStatus(ApplicationStatus.ACCEPTED);
+            repository.save(application.get());
         }
     }
 

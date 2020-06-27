@@ -1,8 +1,9 @@
 package com.loan_application.controller;
 
-import com.loan_application.domain.application.Application;
+
 import com.loan_application.exceptions.ApplicationNotFoundException;
 import com.loan_application.exceptions.IncorrectRequirementsException;
+import com.loan_application.representation.ApplicationDto;
 import com.loan_application.service.ApplicationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,9 @@ public class ApplicationController {
     }
 
     @PostMapping(value = "/apply")
-    public ResponseEntity<String> apply(@RequestBody Application application, @RequestParam Long userId) {
-        service.apply(application, userId);
-        return new ResponseEntity<>("Success! Application number: " + application.getAppId() + " was submitted.", HttpStatus.OK) ;
+    public ResponseEntity<String> apply(@RequestBody ApplicationDto applicationDto, @RequestParam Long userId) {
+        service.apply(applicationDto, userId);
+        return new ResponseEntity<>("Success! Application number: " + applicationDto.getAppId() + " was submitted.", HttpStatus.OK) ;
     }
 
 
