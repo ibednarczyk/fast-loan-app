@@ -13,8 +13,9 @@ public class ApplicationMapper {
 
     }
 
-    public ApplicationDto mapToApplicationDto(Application application) {
+    public static ApplicationDto mapToApplicationDto(Application application) {
         return ApplicationDto.builder()
+                .appId(application.getAppId())
                 .principal(application.getPrincipal())
                 .term(application.getTerm())
                 .status(application.getStatus())
@@ -25,7 +26,7 @@ public class ApplicationMapper {
 
     }
 
-    public Application mapToApplication(ApplicationDto applicationDto) {
+    public static Application mapToApplication(ApplicationDto applicationDto) {
         return Application.builder()
                 .principal(applicationDto.getPrincipal())
                 .term(applicationDto.getTerm())
