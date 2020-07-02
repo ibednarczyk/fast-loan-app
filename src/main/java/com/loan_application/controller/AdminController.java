@@ -7,6 +7,7 @@ import com.loan_application.exceptions.ApplicationNotFoundException;
 import com.loan_application.exceptions.LoanNotFoundByApplicationIdException;
 import com.loan_application.exceptions.LoanNotFoundException;
 import com.loan_application.representation.ApplicationDto;
+import com.loan_application.representation.LoanDto;
 import com.loan_application.service.ApplicationService;
 import com.loan_application.service.LoanService;
 import com.loan_application.service.UserService;
@@ -59,17 +60,17 @@ public class AdminController {
 
 
     @GetMapping(value = "/loan/all")
-    public List<Loan> getAllLoans(){
+    public List<LoanDto> getAllLoans(){
         return loanService.findAll();
     }
 
     @GetMapping(value = "/loan")
-    public Loan getLoanById(@RequestParam(value = "id") Long id) throws LoanNotFoundException {
+    public LoanDto getLoanById(@RequestParam(value = "id") Long id) throws LoanNotFoundException {
         return loanService.findById(id);
     }
 
     @GetMapping(value = "/loan/appId/{id}")
-    public Loan getLoanByApplicationId(@PathVariable Long id) throws LoanNotFoundByApplicationIdException {
+    public LoanDto getLoanByApplicationId(@PathVariable Long id) throws LoanNotFoundByApplicationIdException {
         return loanService.findByApplicationId(id);
     }
 
