@@ -5,6 +5,9 @@ import com.loan_application.config.AppConfiguration;
 import com.loan_application.domain.application.Application;
 import com.loan_application.domain.loan.Loan;
 import com.loan_application.exceptions.*;
+import com.loan_application.mappers.LoanMapper;
+import com.loan_application.representation.ApplicationDto;
+import com.loan_application.representation.LoanDto;
 import com.loan_application.status.ApplicationStatus;
 import com.loan_application.status.LoanStatus;
 import com.loan_application.repository.LoansRepository;
@@ -19,6 +22,10 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.loan_application.mappers.ApplicationMapper.mapToApplication;
 
 @Service
 public class LoanService {
@@ -36,17 +43,19 @@ public class LoanService {
         this.total = new BigDecimal(BigInteger.ZERO);
     }
 
-    public List<Loan> findAll(){
-        return repository.findAll();
+    public List<LoanDto> findAll(){
+        return repository.findAll().stream()
+                .map(LoanMapper::toLoanDto)
+                .collect(Collectors.toList());
     }
 
-    public Loan findById (Long id) throws LoanNotFoundException {
-        return repository.findById(id)
+    public LoanDto findById (Long id) throws LoanNotFoundException {
+        return repository.findById(id).map(LoanMapper::toLoanDto)
                 .orElseThrow(() -> new LoanNotFoundException(id));
     }
 
-    public Loan findByApplicationId (Long applicationId) {
-        return repository.findById(applicationId)
+    public LoanDto findByApplicationId (Long applicationId) {
+        return repository.findById(applicationId).map(LoanMapper::toLoanDto)
                 .orElseThrow(() -> new LoanNotFoundByApplicationIdException(applicationId));
     }
 
@@ -54,14 +63,14 @@ public class LoanService {
 
 
     public ResponseEntity<String> create(Long applicationId) {
-        Application application = Objects.requireNonNull(service.findById(applicationId));
+        ApplicationDto applicationDto = Objects.requireNonNull(service.findById(applicationId));
         Loan loan = new Loan();
-        validateApplicationStatus(application.getStatus(), applicationId);
+        validateApplicationStatus(applicationDto.getStatus(), applicationId);
         loan.setStatus(LoanStatus.VALID);
         loan.setOpenDate(LocalDateTime.now());
-        loan.setDueDate(loan.getOpenDate().plusDays(application.getTerm()));
+        loan.setDueDate(loan.getOpenDate().plusDays(applicationDto.getTerm()));
         loan.setCost(calculate(applicationId));
-        loan.setUser(application.getUser());
+        loan.setUser(applicationDto.getUser());
         repository.save(loan);
 
         return new ResponseEntity<>("Success! Loan number: " + loan.getLoanId() + " was created.", HttpStatus.OK);
@@ -69,15 +78,17 @@ public class LoanService {
     }
 
     private BigDecimal calculate (Long applicationId) {
-        Application application = Objects.requireNonNull(service.findById(applicationId));
+        ApplicationDto applicationDto = Objects.requireNonNull(service.findById(applicationId));
+        Application application = mapToApplication(applicationDto);
         BigDecimal cost = application.getPrincipal().multiply(configuration.getCommission());
         this.total = cost.setScale(2, RoundingMode.CEILING);
         return this.total;
     }
 
     public ResponseEntity<String> extend (Long loanId, Integer extensionDays) {
-        Loan loan = Objects.requireNonNull(findById(loanId));
-        validateLoanStatus(loan.getStatus(), loanId);
+        Optional<Loan> loanOptional = Objects.requireNonNull(repository.findById(loanId));
+        loanOptional.ifPresent(loan -> validateLoanStatus(loan.getStatus(), loanId));
+        Loan loan = loanOptional.orElseThrow(IllegalArgumentException::new);
         if (!configuration.getExtension().contains(extensionDays)) {
             throw new IncorrectRequirementsException();
         } else {
