@@ -3,12 +3,15 @@ package com.loan_application.service;
 import com.loan_application.email.service.EmailRegistrationService;
 import com.loan_application.domain.user.User;
 import com.loan_application.exceptions.UserNotFoundException;
+import com.loan_application.mappers.UserMapper;
 import com.loan_application.repository.UsersRepository;
+import com.loan_application.representation.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -25,25 +28,22 @@ public class UserService {
     }
 
 
-    public User findById(Long id){
-        return repository.findById(id).orElseThrow(()-> new UserNotFoundException(id));
+    public UserDto findById(Long id){
+
+        return repository.findById(id).map(UserMapper::mapToUserDto)
+                .orElseThrow(()-> new UserNotFoundException(id));
     }
 
-    public List<User> findAll(){
-        return repository.findAll();
+    public List<UserDto> findAll(){
+        return repository.findAll().stream()
+                .map(UserMapper::mapToUserDto)
+                .collect(Collectors.toList());
     }
 
-    public void register(User user){
-       user.setPassword(passwordEncoder.encode(user.getPassword()));
-        User.builder()
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .userName(user.getUserName())
-                .email(user.getEmail())
-                .phoneNumber(user.getPhoneNumber())
-                .role(user.getRole())
-                .active(true)
-                .build();
+    public void register(UserDto userDto){
+       userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+       userDto.setActive(true);
+       User user = UserMapper.mapToUser(userDto);
         repository.save(user);
         emailRegistrationService.send(user.getUserId());
     }

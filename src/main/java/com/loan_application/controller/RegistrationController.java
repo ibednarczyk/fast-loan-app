@@ -1,6 +1,6 @@
 package com.loan_application.controller;
 
-import com.loan_application.domain.user.User;
+import com.loan_application.representation.UserDto;
 import com.loan_application.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,8 @@ public class RegistrationController {
     public RegistrationController(UserService userService) { this.service = userService; }
 
     @PostMapping
-    public ResponseEntity<String> register(@RequestBody User user){
-        service.register(user);
+    public ResponseEntity<String> register(@RequestBody UserDto userDto){
+        service.register(userDto);
         return new ResponseEntity<>("You have been register successfully!", HttpStatus.CREATED);}
 
 

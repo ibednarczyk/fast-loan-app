@@ -1,13 +1,11 @@
 package com.loan_application.controller;
 
-import com.loan_application.domain.application.Application;
-import com.loan_application.domain.loan.Loan;
-import com.loan_application.domain.user.User;
 import com.loan_application.exceptions.ApplicationNotFoundException;
 import com.loan_application.exceptions.LoanNotFoundByApplicationIdException;
 import com.loan_application.exceptions.LoanNotFoundException;
 import com.loan_application.representation.ApplicationDto;
 import com.loan_application.representation.LoanDto;
+import com.loan_application.representation.UserDto;
 import com.loan_application.service.ApplicationService;
 import com.loan_application.service.LoanService;
 import com.loan_application.service.UserService;
@@ -30,12 +28,12 @@ public class AdminController {
     }
 
     @GetMapping(value = "/user/all")
-    public List<User> getAllUsers(){
+    public List<UserDto> getAllUsers(){
         return userService.findAll();
     }
 
     @GetMapping(value = "/user")
-    public User getUserById(@RequestParam(value = "id") Long id){
+    public UserDto getUserById(@RequestParam(value = "id") Long id){
         return userService.findById(id);
     }
 
