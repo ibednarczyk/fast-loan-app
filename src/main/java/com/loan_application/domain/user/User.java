@@ -50,7 +50,7 @@ public class User {
     private boolean active;
 
 
-    @JsonManagedReference
+
     @OneToMany(
             targetEntity = Application.class,
             mappedBy = "user",
@@ -59,7 +59,7 @@ public class User {
     )
     private List<Application> applicationsList;
 
-    @JsonManagedReference
+
     @OneToMany(
             targetEntity = Loan.class,
             mappedBy = "user",

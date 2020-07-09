@@ -1,9 +1,14 @@
 package com.loan_application.representation;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.loan_application.domain.application.Application;
+import com.loan_application.domain.loan.Loan;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -20,5 +25,9 @@ public class UserDto {
     private String phoneNumber;
     private String role;
     private boolean active;
+    @JsonManagedReference
+    private List<Application> applicationsList;
+    @JsonManagedReference
+    private List<Loan> loansList;
 
 }

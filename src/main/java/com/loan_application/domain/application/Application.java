@@ -36,7 +36,7 @@ public class Application {
     @Column(name = "STATUS")
     private String status;
 
-    @JsonBackReference
+
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;

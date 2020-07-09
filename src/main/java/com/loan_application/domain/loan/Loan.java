@@ -38,7 +38,7 @@ public class Loan {
     private String status;
 
 
-    @JsonBackReference
+
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
     private User user;

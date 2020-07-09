@@ -1,5 +1,6 @@
 package com.loan_application.representation;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.loan_application.domain.user.User;
 import lombok.*;
@@ -20,5 +21,6 @@ public class ApplicationDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime submissionDate;
     private String status;
+    @JsonBackReference
     private User user;
 }
