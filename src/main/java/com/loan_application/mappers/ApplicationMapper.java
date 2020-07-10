@@ -20,7 +20,6 @@ public class ApplicationMapper {
                 .term(application.getTerm())
                 .status(application.getStatus())
                 .submissionDate(application.getSubmissionDate())
-                .user(application.getUser())
                 .build();
 
 

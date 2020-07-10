@@ -17,7 +17,6 @@ public class LoanMapper {
                 .openDate(loan.getOpenDate())
                 .dueDate(loan.getDueDate())
                 .status(loan.getStatus())
-                .user(loan.getUser())
                 .build();
     }
 
