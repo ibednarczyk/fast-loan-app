@@ -2,7 +2,6 @@ package com.loan_application.representation;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.loan_application.domain.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,6 +23,6 @@ public class LoanDto {
     private LocalDateTime dueDate;
     private String status;
     @JsonBackReference
-    private User user;
+    private UserDto userDto;
 
 }

@@ -2,8 +2,6 @@ package com.loan_application.representation;
 
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.loan_application.domain.application.Application;
-import com.loan_application.domain.loan.Loan;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,8 +24,8 @@ public class UserDto {
     private String role;
     private boolean active;
     @JsonManagedReference
-    private List<Application> applicationsList;
+    private List<ApplicationDto> applicationsList;
     @JsonManagedReference
-    private List<Loan> loansList;
+    private List<LoanDto> loansList;
 
 }

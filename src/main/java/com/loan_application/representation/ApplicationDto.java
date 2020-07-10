@@ -2,7 +2,6 @@ package com.loan_application.representation;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.loan_application.domain.user.User;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -22,5 +21,5 @@ public class ApplicationDto {
     private LocalDateTime submissionDate;
     private String status;
     @JsonBackReference
-    private User user;
+    private UserDto userDto;
 }
