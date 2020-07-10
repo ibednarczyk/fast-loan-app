@@ -8,6 +8,7 @@ import com.loan_application.domain.user.User;
 import com.loan_application.exceptions.ApplicationNotFoundException;
 import com.loan_application.exceptions.IncorrectRequirementsException;
 import com.loan_application.mappers.ApplicationMapper;
+import com.loan_application.repository.UsersRepository;
 import com.loan_application.representation.ApplicationDto;
 import com.loan_application.status.ApplicationStatus;
 import com.loan_application.repository.ApplicationsRepository;
@@ -26,15 +27,15 @@ import static com.loan_application.mappers.ApplicationMapper.mapToApplication;
 public class ApplicationService {
     private ApplicationsRepository repository;
     private AppConfiguration configuration;
-    private UserService service;
+    private UsersRepository usersRepository;
     private EmailApplicationService emailService;
 
     @Autowired
     public ApplicationService(AppConfiguration configuration, ApplicationsRepository repository,
-                              UserService service, EmailApplicationService emailService) {
+                              UsersRepository usersRepository, EmailApplicationService emailService) {
         this.configuration = configuration;
         this.repository = repository;
-        this.service = service;
+        this.usersRepository = usersRepository;
         this.emailService = emailService;
     }
 
@@ -51,7 +52,8 @@ public class ApplicationService {
 
 
     public void apply (ApplicationDto applicationDto, Long userId) {
-        User user = Objects.requireNonNull(service.findById(userId));
+        Optional<User> optionalUser = Objects.requireNonNull(usersRepository.findById(userId));
+        User user = optionalUser.orElseThrow(IllegalArgumentException::new);
         Application application = mapToApplication(applicationDto);
         application.setSubmissionDate(LocalDateTime.now());
         application.setStatus(ApplicationStatus.NEW);
@@ -60,7 +62,6 @@ public class ApplicationService {
         applicationDto.setAppId(application.getAppId());
         applicationDto.setStatus(application.getStatus());
         applicationDto.setSubmissionDate(application.getSubmissionDate());
-        applicationDto.setUser(application.getUser());
         emailService.send(userId);
     }
 

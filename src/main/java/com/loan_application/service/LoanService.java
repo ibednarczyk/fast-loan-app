@@ -1,12 +1,13 @@
 package com.loan_application.service;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.loan_application.config.AppConfiguration;
 import com.loan_application.domain.application.Application;
 import com.loan_application.domain.loan.Loan;
 import com.loan_application.exceptions.*;
 import com.loan_application.mappers.LoanMapper;
-import com.loan_application.representation.ApplicationDto;
+import com.loan_application.repository.ApplicationsRepository;
 import com.loan_application.representation.LoanDto;
 import com.loan_application.status.ApplicationStatus;
 import com.loan_application.status.LoanStatus;
@@ -30,15 +31,15 @@ import static com.loan_application.mappers.ApplicationMapper.mapToApplication;
 @Service
 public class LoanService {
     private LoansRepository repository;
-    private ApplicationService service;
+    private ApplicationsRepository applicationsRepository;
     private AppConfiguration configuration;
     private BigDecimal total;
 
 
     @Autowired
-    public LoanService(LoansRepository repository, ApplicationService applicationService, AppConfiguration configuration) {
+    public LoanService(LoansRepository repository, ApplicationsRepository applicationsRepository, AppConfiguration configuration) {
         this.repository = repository;
-        this.service = applicationService;
+        this.applicationsRepository = applicationsRepository;
         this.configuration = configuration;
         this.total = new BigDecimal(BigInteger.ZERO);
     }
@@ -63,14 +64,15 @@ public class LoanService {
 
 
     public ResponseEntity<String> create(Long applicationId) {
-        ApplicationDto applicationDto = Objects.requireNonNull(service.findById(applicationId));
+        Optional<Application> optionalApplication = Objects.requireNonNull(applicationsRepository.findById(applicationId));
+        Application application = optionalApplication.orElseThrow(IllegalArgumentException::new);
         Loan loan = new Loan();
-        validateApplicationStatus(applicationDto.getStatus(), applicationId);
+        validateApplicationStatus(application.getStatus(), applicationId);
         loan.setStatus(LoanStatus.VALID);
         loan.setOpenDate(LocalDateTime.now());
-        loan.setDueDate(loan.getOpenDate().plusDays(applicationDto.getTerm()));
+        loan.setDueDate(loan.getOpenDate().plusDays(application.getTerm()));
         loan.setCost(calculate(applicationId));
-        loan.setUser(applicationDto.getUser());
+        loan.setUser(application.getUser());
         repository.save(loan);
 
         return new ResponseEntity<>("Success! Loan number: " + loan.getLoanId() + " was created.", HttpStatus.OK);
@@ -78,8 +80,8 @@ public class LoanService {
     }
 
     private BigDecimal calculate (Long applicationId) {
-        ApplicationDto applicationDto = Objects.requireNonNull(service.findById(applicationId));
-        Application application = mapToApplication(applicationDto);
+        Optional<Application> optionalApplication = Objects.requireNonNull(applicationsRepository.findById(applicationId));
+        Application application = optionalApplication.orElseThrow(IllegalArgumentException::new);
         BigDecimal cost = application.getPrincipal().multiply(configuration.getCommission());
         this.total = cost.setScale(2, RoundingMode.CEILING);
         return this.total;
