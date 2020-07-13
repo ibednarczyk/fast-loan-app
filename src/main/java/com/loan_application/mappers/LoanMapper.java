@@ -13,6 +13,7 @@ public class LoanMapper {
 
         return LoanDto.builder()
                 .loanId(loan.getLoanId())
+                .applicationId(loan.getApplicationId())
                 .cost(loan.getCost())
                 .openDate(loan.getOpenDate())
                 .dueDate(loan.getDueDate())

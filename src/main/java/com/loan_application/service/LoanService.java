@@ -56,7 +56,7 @@ public class LoanService {
     }
 
     public LoanDto findByApplicationId (Long applicationId) {
-        return repository.findById(applicationId).map(LoanMapper::toLoanDto)
+        return repository.findByApplicationId(applicationId).map(LoanMapper::toLoanDto)
                 .orElseThrow(() -> new LoanNotFoundByApplicationIdException(applicationId));
     }
 
@@ -73,6 +73,7 @@ public class LoanService {
         loan.setDueDate(loan.getOpenDate().plusDays(application.getTerm()));
         loan.setCost(calculate(applicationId));
         loan.setUser(application.getUser());
+        loan.setApplicationId(applicationId);
         repository.save(loan);
 
         return new ResponseEntity<>("Success! Loan number: " + loan.getLoanId() + " was created.", HttpStatus.OK);

@@ -18,6 +18,7 @@ public class LoanDto {
 
 
     private Long loanId;
+    private Long applicationId;
     private BigDecimal cost;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime openDate;

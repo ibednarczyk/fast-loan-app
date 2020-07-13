@@ -25,6 +25,9 @@ public class Loan {
     @Column(name = "ID", unique = true)
     private Long loanId;
 
+    @JoinColumn(name = "APPLICATION_ID", referencedColumnName = "ID")
+    private Long applicationId;
+
     @Column(name = "COST")
     private BigDecimal cost;
 
