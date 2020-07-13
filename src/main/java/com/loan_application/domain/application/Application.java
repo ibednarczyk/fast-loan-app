@@ -1,6 +1,6 @@
 package com.loan_application.domain.application;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.loan_application.domain.user.User;
 import lombok.*;
 

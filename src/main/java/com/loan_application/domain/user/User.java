@@ -1,6 +1,6 @@
 package com.loan_application.domain.user;
 
-import com.fasterxml.jackson.annotation.*;
+
 import com.loan_application.domain.application.Application;
 import com.loan_application.domain.loan.Loan;
 import lombok.*;

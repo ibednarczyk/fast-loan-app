@@ -1,7 +1,7 @@
 package com.loan_application.service;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+
 import com.loan_application.config.AppConfiguration;
 import com.loan_application.domain.application.Application;
 import com.loan_application.domain.loan.Loan;
@@ -26,7 +26,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.loan_application.mappers.ApplicationMapper.mapToApplication;
+
 
 @Service
 public class LoanService {
